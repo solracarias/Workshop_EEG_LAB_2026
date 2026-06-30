@@ -1,19 +1,4 @@
-### 1. Running FastQC on raw illumina data
-* FastQC is a program that can quickly scan your raw data to help figure out if there are adapters or low quality reads present. Create a job file to run FastQC on one of the fastq files here: ```/data/genomics/workshops/smsc_2024/rawdata/```
-	+ **module**: ```bio/fastqc```
-	+ **command**: ```fastqc <FILE.fastq> -o .```
-	+ after your job finishes, find the results and download some of the images, e.g. ```per_base_quality.png``` to your local machine using ffsend (load ```tools/ffsend``` module) and then the command ```ffsend upload <FILE>```.
-
-
-### 2. Trimming adapters with TrimGalore! 
-* PacBio data will be error-corrected solely by the assembler, but Illumina data trimming and thinning are common.
-* Most assemblers these days don't want you to trim/thin for quality before assembling, but trimming is important for downstream applications. TrimGalore will auto-detect what adapters are present and remove very low quality reads (quality score <20) by default.  
-* Create a job file to trim adapters and very low quality reads for the Illumina data here: ```/data/genomics/workshops/smsc_2024/rawdata/```
-	+ **command**: ```trim_galore --paired --retain_unpaired <FILE_1.fastq> <FILE_2.fastq>```  
-	+ **module**: ```bio/trim_galore```
-	+ You can then run FastQC again to see if anything has changed.
-
-### 3. Run Genomescope
+### 1. Run Genomescope
 
 * Genomescope can be used to estimate genome size from short read data: 
 	+ [Genomescope](http://genomescope.org/genomescope2.0/) 
@@ -21,12 +6,12 @@
 * To run Genomescope, first you need to generate a Jellyfish histogram.
 
 * You'll need two job files for Jellyfish, one to count the kmers and the second to generate a histogram to give to Genomescope: 
-* Here is a copy of the Guam Rail Illumina data: ```/data/genomics/workshops/smsc_2024/rawdata/```
+* Here is a copy of the Guam Rail Illumina data: ```/scratch/genomics/ariasc/Sol_moth_genome/```
 	+ Hint: don't copy these data to your own space - they are very big.
 
 * First job file: kmer count:
 	+ Module: ```bio/jellyfish```
-	+ Commands: ```zcat /data/genomics/workshops/smsc_2024/rawdata/SRR25828983_1.fastq.gz /data/genomics/workshops/smsc_2024/rawdata/SRR25828983_2.fastq.gz | jellyfish count -C -m 21 -t $NSLOTS -s 800000000 /dev/fd/0 -o reads.jf```
+	+ Commands: ```zcat /scratch/genomics/ariasc/Sol_moth_genome/m84100_260323_193529_s1.hifi_reads.fastq.gz | jellyfish count -C -m 21 -t $NSLOTS -s 800000000 /dev/fd/0 -o reads.jf```
 	+ ```zcat``` = uncompress the .fastq.gz files and sends the output to standard output (stdout)
  	+  ```/dev/fd/0``` = This allows jellyfish to read from the standard input (stdin), which is receiving the uncompressed data from zcat.
   	+ ```Pipping (|)``` = Passes the uncompressed data from zcat directly to the jellyfish count command.
@@ -44,9 +29,8 @@
 
 * Download the histogram to your computer (e.g. using ffsend again), and put it in the Genomescope webservice: [Genomescope](http://genomescope.org/genomescope2.0/)
 
-* let's run the analysis the same analysis with the HiFi PacBio data.
 
-### 4. Hifiasm Assembly
+### 2. Hifiasm Assembly
 
 Hifiasm is a fast haplotype-resolved de novo assembler for PacBio HiFi reads. It can produce partially phased assemblies of great quality. Hifiasm can use trio (Parental) short reads data or Hi-C data to produce haplotype-resolved assemblies.
 
@@ -60,7 +44,7 @@ Hifiasm is a fast haplotype-resolved de novo assembler for PacBio HiFi reads. It
   + **RAMMemory:** 10G (10G per CPU, 300G total)
   + **Module:** `module load bio/hifiasm`
   + **Command:**
-```hifiasm -o Guam_Rail_only.asm -t 32 /data/genomics/workshops/smsc_2024/rawdata/SRR27030659_1_pacbio.fastq```
+```hifiasm -o teuthros._only.asm -t 20 /scratch/genomics/ariasc/Sol_moth_genome/m84100_260323_193529_s1.hifi_reads.fastq.gz```
 
 ##### Comand explanation:
 ```
@@ -109,7 +93,7 @@ cd /path/to/your/assembly_results/
 awk '/^S/{print ">"$2;print $3}' test.bp.p_ctg.gfa > test.p_ctg.fa
 ```
 
-### 5. Run the fasta metadata parser to get statistics about both the primary assembly and haplotype-resolved assemblies.
+### 3. Run the fasta metadata parser to get statistics about both the primary assembly and haplotype-resolved assemblies.
 * We use a python script to grab some statistics from assembly files. These are the stats it produces:  
 
 Total number of base pairs:    
