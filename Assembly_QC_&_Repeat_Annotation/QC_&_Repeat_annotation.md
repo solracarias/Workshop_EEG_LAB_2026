@@ -249,9 +249,9 @@ blobtools plot -i Sol_moth_my_first_blobplot.blobDB.json -o plots/
 
 This comand generates three files:
 
-* Guam_Rail_my_first_blobplot.blobDB.json.bestsum.phylum.p7.span.100.blobplot.bam0.png
-* Guam_Rail_my_first_blobplot.blobDB.json.phylum.p7.span.100.blobplot.read_cov.bam0.png
-* Guam_Rail_my_first_blobplot.blobDB.json.bestsum.phylum.p7.span.100.blobplot.stats.txt
+* Sol_moth_my_first_blobplot.blobDB.json.bestsum.phylum.p7.span.100.blobplot.bam0.png
+* Sol_moth_my_first_blobplot.blobDB.json.phylum.p7.span.100.blobplot.read_cov.bam0.png
+* Sol_moth_my_first_blobplot.blobDB.json.bestsum.phylum.p7.span.100.blobplot.stats.txt
 
 Please download these files to your machine. Remember that you can use the ffsend module.
 
