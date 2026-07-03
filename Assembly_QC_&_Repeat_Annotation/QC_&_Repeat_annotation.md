@@ -55,7 +55,7 @@ If we follow this folder structure, we will have all the results organized by so
 **Submitting jobs**: With this folder structure, we will save all the job files with each program folder and the job files will be submitted from there.   
 
 ### Input file
-For this session, we will use our new Guam Rail assembly. You can find this file here: `/data/genomics/workshops/smsc_2024/Guam_rail_assembly/bHypOws1_hifiasm.bp.p_ctg.fasta`
+For this session, we will use our new moth assembly assembly. You can find this file here: `/scratch/genomics/ariasc/Sol_moth_genome/teuthros.asm.bp.p_ctg.fasta `
 
 
 **If you want to run things quickly you can run the programs by Extracting some scaffolds**
@@ -83,7 +83,7 @@ Use `samtools` to extract the list of sequences from the original assembly:
 BUSCO (Simão et al. 2015; Waterhouse et al. 2017) assesses completeness by searching the genome for a selected set of single copy orthologous genes. There are several databases that can be used with BUSCO and they can be downloaded from here: [https://buscos.ezlab.org](https://buscos.ezlab.org). 
 
 
-#### Job file: busco_Guam_Rail.job
+#### Job file: busco_moth.job
 - Queue: medium
 - PE: multi-thread
 - Number of CPUs: 10
@@ -92,7 +92,7 @@ BUSCO (Simão et al. 2015; Waterhouse et al. 2017) assesses completeness by sear
 - Commands:
 
 ```
-busco -o Guam_Rail -i path/to_assembly/bHypOws1_hifiasm.bp.p_ctg.fasta -l aves_odb10 -c $NSLOTS -m genome
+busco -o Sol_moth -i /scratch/genomics/ariasc/Sol_moth_genome/teuthros.asm.bp.p_ctg.fasta -l lepidoptera_odb12 -c $NSLOTS -m genome
 ```
 
 ##### Explanation:
@@ -111,25 +111,25 @@ BUSCO doesn't have an option to redirect the output to a different folder. For t
 
 ```
 cd ../busco
-qsub busco_Guam_rail.job
+qsub busco_moth.job
 ```
 
 **Note about Databases:**
 
 If you do not have internet connection on the node where running the software you can download the database and run the program offline. For instance to download the Mammalia database you can use the command `wget` and extract it.It is important to dowlod and untar the folder on your busco folder. Let's `cd` to the directory `busco` first.
 
-	wget https://busco-data.ezlab.org/v5/data/lineages/aves_odb10.2024-01-08.tar.gz 
-	tar -zxf aves_odb10.2024-01-08.tar.gz 
+	wget https://busco-data.ezlab.org/v5/data/lineages/lepidopetera_odb12.2026-XX-XX.tar.gz 
+	tar -zxf lepidopetera_odb12.2026-XX-XX.tar.gz
 
 In this case, the command to run busco will have to change to: 
 
 ```
-busco  -o Guam_Rail -i /path/to_assembly/bHypOws1_hifiasm.bp.p_ctg.fasta -l aves_odb10 -c $NSLOTS -m genome --offline --download_path /path/to/datasets
+busco  -o Sol_moth -i /scratch/genomics/ariasc/Sol_moth_genome/teuthros.asm.bp.p_ctg.fasta -l lepidoptera_odb12 -c $NSLOTS -m genome --offline --download_path /path/to/datasets
 ```
 To Plot the results use the generate_plot.py script provided by BUSCO.
 
 ```
-generate_plot.py -wd /scratch/genomics/ariasc/smsc_2024/busco_run/Guam_Rail 
+generate_plot.py -wd /scratch/genomics/ariasc/smsc_2024/busco_run/Sol_moth
 ```
 
 ##### Explanation:
@@ -160,7 +160,7 @@ First, you need to blast your assembly to know nt databases. For this we will us
 - Commands:
 
 ```
-blastn -db /data/genomics/db/ncbi/db/latest_v4/nt/nt -query /path/to_assembly/bHypOws1_hifiasm.bp.p_ctg.fasta.gz -outfmt "6 qseqid staxids bitscore std" -max_target_seqs 20 -max_hsps 1 -evalue 1e-20 -num_threads $NSLOTS -out Guam_Rail_blast.out
+blastn -db /scratch/dbs/blast/v5 -query /scratch/genomics/ariasc/Sol_moth_genome/teuthros.asm.bp.p_ctg.fasta -outfmt "6 qseqid staxids bitscore std" -max_target_seqs 20 -max_hsps 1 -evalue 1e-20 -num_threads $NSLOTS -out Sol_moth_blast.out
 ```
 
 ##### Explanation:
@@ -176,7 +176,7 @@ blastn -db /data/genomics/db/ncbi/db/latest_v4/nt/nt -query /path/to_assembly/bH
 
 Second, you need to map raw reads to the genome assembly. We will use minimap2 for this. Minimap2 is a versatile sequence alignment program that aligns DNA or mRNA sequences against reference database. Typical use cases include: (1) mapping PacBio or Oxford Nanopore genomic reads to a reference genome; or (2) aligning Illumina single- or paired-end reads to a reference genome. After mapping the reads we need to convert the output file SAM into a BAM file and sort this file. For this we will use the program samtools. Samtools is a suite of programs for interacting with high-throughput sequencing data. 
 
-#### Job file: minimap_Guam_Rail.job
+#### Job file: minimap_Sol_moth.job
 - Queue: medium
 - PE: multi-thread
 - Number of CPUs: 10
@@ -189,7 +189,7 @@ Second, you need to map raw reads to the genome assembly. We will use minimap2 f
 - Commands:
 
 ```
-minimap2 -ax map-hifi -t 20 /data/genomics/workshops/smsc_2024/Guam_rail_assembly/bHypOws1_hifiasm.bp.p_ctg.fasta.gz /data/genomics/workshops/smsc_2024/rawdata/SRR27030659_1_pacbio.fastq | samtools view -b | samtools sort -@20 -O BAM -o Guam_Rail_sorted.bam - && samtools index Guam_Rail_sorted.bam
+minimap2 -ax map-hifi -t 20 /scratch/genomics/ariasc/Sol_moth_genome/teuthros.asm.bp.p_ctg.fasta /scratch/genomics/ariasc/Sol_moth_genome/filtered_reads_38G.fastq.gz | samtools view -b | samtools sort -@20 -O BAM -o Sol_moth_sorted.bam - && samtools index Sol_moth_sorted.bam
 ```
 
 ##### Explanation:
@@ -220,7 +220,7 @@ Now that we have the blast and mapping results we can create the BlobTools datab
 - Commands:
 
 ```
-blobtools create -i /path/to_assembly/bHypOws1_hifiasm.bp.p_ctg.fasta -b Guam_Rail_sorted.bam -t /path/to_hits_output/Guam_Rail_blast.out -o Guam_Rail_my_first_blobplot
+blobtools create -i /scratch/genomics/ariasc/Sol_moth_genome/teuthros.asm.bp.p_ctg.fasta -b Sol_Moth_sorted.bam -t /path/to_hits_output/Sol_moth_blast.out -o Sol_moth_my_first_blobplot
 
 ```
 
@@ -243,7 +243,7 @@ Once you have a BlobDir database, we can plot the blobplot and the covplot. Sinc
 qrsh
 module load bio/blobtools
 mkdir plots
-blobtools plot -i Guam_Rail_my_first_blobplot.blobDB.json -o plots/
+blobtools plot -i Sol_moth_my_first_blobplot.blobDB.json -o plots/
 
 ```
 
@@ -260,87 +260,22 @@ Please download these files to your machine. Remember that you can use the ffsen
 * All your reads are mapping to your genome?
 
 
-### Run Bloobtools2
+### Run Bloobtools --- Under construction 
 
-Similar to blobtools 1.1, blobtools2 requires an assembly (fasta), blast hit file (blast.out) and a mapping reads file (bam). You can see above on blobtools section how to create those files.
+I want to use nf-core and nextflow on this section. This will be here soon.
 
-#### Creating blobtools2 data base
-
-Now that we have the blast and mapping results we can create the BlobTools2 database. The minimum requirement to create a new database with BlobTools2 is an assembly FASTA file. This runs very fast so we do can use an interactive node.
-
-```
-qrsh -pe mthread 3
-module load bio/blobtools/2.6.3 
-blobtools create --fasta /path/to_assembly/bHypOws1_hifiasm.bp.p_ctg.fasta.gz Guam_Rail_blobt_nb
-```
-
-##### Explanation:
-
-```
-create: command to creat the database with blobtools2.
---fasta: path and name of the assembly fasta file.
-clouded_leopard_blobt_nb: name of the database.
-```
-#### Adding data to a database
-
-Once you have a BlobDir database, other data can be added by parsing analysis output files into one or more fields using the `blobtools add` command. Preset parsers are available for a range of analysis types, such as BLAST or Diamond hits with taxonomic assignments for scaffolds/contigs; read mapping files provide base and read coverage and BUSCO results that show completeness metrics for the genome assembly.
-Again, since this is not computationally expensive we can use an interactive node.
-
-
-```
-qrsh -pe mthread 3
-module load bio/blobtools/2.6.3 
-blobtools add --threads 3 --hits Guam_Rail_blast.out --taxrule bestsumorder --taxdump /pool/genomics/ariasc/SMSC_2023/blobtools/taxdump Guam_Rail_blobt_nb 
-blobtools add --threads 3 --cov Guam_Raai._sorted.bam Guam_Rail_blobt_nb # this can take a several minutes 
-blobtools add --threads 3 --busco full_table.tsv Guam_Rail_blobt_nb
-```
-
-#### Create interactive html page with the blobtools results
-
-After you finish creating and adding data to the database in order to visulize the results you need to install blobtools2 on your personal machine and  download the database folder. First lets tar zip the folder with the command ```tar -czvf name-of-archive.tar.gz /path/to/directory-or-file``` and  download the folder using the ffsend (load ```bio/ffsend``` module). 
-
-Now let's install blobtools on your machine. For this you can use conda...
-
-Please download your folder from the ffsend link, and move the file to a new folder on your machine. After downlodaing the folder you need to untar the folder
-
-<details><summary>SOLUTION</summary>
-<p>
-Please download your folder from the ffsend link, and move the file to a new folder on your machine. After downlodaing the folder you need to untar the folder:
-
-```
-mkdir blobtools_results
-cd blobtools_results
-#move or ffsend folder to this folder
-tar -xzvf archive.tar.gz
-```
-</p>
-</details>
-
-After installing blobtools2 make sure that you have activate your conda environment and from the program folder run the following command on your database folder.
-
-```
-conda activate btk_env
-./blobtools view --remote path/to/Guam_Rail_nb
-```
-The cool thing about this is that you can interact with the results and visualize them in several ways. It also give you nice images that can be use on your publication.
-
-* How long is the longest contig and scaffold?
-* What is the contig and scaffold N50?
-* Are there any contamination?
-* if yes, what taxa are contaminant of your assembly?
 
 ### Kmer-based assembly evaluation with Merqury and Meryl
 
-First, you create a read kmer database from the HiFi, ONT or reads used for the base assembly using meryl. We will be doing two examples one on the Ara ambiguus haplotype-resolved assembly and the other on our primary Guam Rail assembly.
-
+First, you create a read kmer database from the HiFi, ONT or reads used for the base assembly using meryl.
 ```
 qrsh -pe mthread 4
 module load bioinformatics/merqury/1.3
 sh $MERQURY/best_k.sh 120000000
 
-meryl count k=21 count /data/genomics/workshops/smsc_2024/rawdata/SRR27030659_1_pacbio.fastq output bHypOWs1.meryl
+meryl count k=21 count /scratch/genomics/ariasc/Sol_moth_genome/filtered_reads_38G.fastq.gz output Sol_moth.meryl
 
-merqury.sh bHypOws1.meryl bHypOws1_hifiasm.bp.p_ctg.fasta bHypOws1_primary
+merqury.sh Sol_moth.meryl /scratch/genomics/ariasc/Sol_moth_genome/teuthros.asm.bp.p_ctg.fasta Sol_moth_primary
 ```
 
 ```
@@ -348,28 +283,20 @@ qrsh -pe mthread 4
 module load bioinformatics/merqury/1.3
 sh $MERQURY/best_k.sh 1200000000
 
-meryl count k=21 count Aambiguus_duplex.fastq.gz output Aambiguus_duplex.meryl
+meryl count k=21 count /scratch/genomics/ariasc/Sol_moth_genome/filtered_reads_38G.fastq.gz output Sol_moth.meryl
 ```
 
 Second, you run merqury.sh using the following commands below:
 
 ```
-merqury.sh Aambiggus_duplex.meryl bAraAmb1.hic.hap1.p_ctg.fasta bAraAmb1.hic.hap2.p_ctg.fasta bAraAmb1_merqury
+merqury.sh Sol_moth.meryl Sol_moth.hap1.p_ctg.fasta Sol_moth.hap2.p_ctg.fasta Sol_moth_merqury
 ```
 
-Now, lets ruu this on our Guam Rail HiFiasm primary assembly with the genome size estimated from Genomescope.
+### Running a complete pipeline such as sanger/genome assembly 
 
-```
-qrsh -pe mthread 4
-module load bioinformatics/merqury
-sh $MERQURY/best_k.sh ....
 
-meryl count k=21 count SRR_1.fastq.gz output bHypOWs1.meryl
 
-merqury.sh bHypOws1.meryl bHypOws1_hifiasm.bp.p_ctg.fasta bHypOws1_primary
-```
-
-### Masking and annotating repetitive elements with Repeatmodeler and RepeatMasker
+### Masking and annotating repetitive elements with Repeatmodeler and RepeatMasker ------ UNDERCONSTRUCTION
 
 Repeatmodeler is a repeat-identifying software that can provide a list of repeat family sequences to mask repeats in a genome with RepeatMasker. Repeatmasker is a program that screens DNA sequences for interspersed repeats and low complexity DNA sequences. the output of the program is a detailed annotation of the repeats that are present in the query sequence as well as a modified version of the query sequence in which all the annotated repeats have been masked. 
 
