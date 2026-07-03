@@ -293,13 +293,30 @@ merqury.sh Sol_moth.meryl Sol_moth.hap1.p_ctg.fasta Sol_moth.hap2.p_ctg.fasta So
 ```
 
 ### Running a complete pipeline such as sanger/genome assembly 
+We need to install:
 
-What is nf-core?
-nf-core is a global community collaborating to build open-source Nextflow components and pipelines.
+* NextFlow
+* Sigularity - already in Hydar
+* nf-core tools
+* Sanger-tol/genomeassembly pipeline
 
-nf-core provides a standardised set of best practices, guidelines, and templates for building and sharing bioinformatics pipelines. These pipelines are designed to be modular, scalable, and portable, allowing researchers to easily adapt and execute them using their own data and compute resources.
-https://nf-co.re/docs/get_started/nf-core
+Wha is ...
+- NextFlow?
+A Nextflow pipeline is a workflow management system that allows developers and scientists to orchestrate complex computational tasks into a cohesive, scalable, and reproducible pipeline. It acts as a bridge between different programming scripts (like Bash, Python, or R) and compute infrastructures (like cloud services or local servers).
+  
+- nf-core?
+nf-core is a global community collaborating to build open-source Nextflow components and pipelines. nf-core provides a standardised set of best practices, guidelines, and templates for building and sharing bioinformatics pipelines. These pipelines are designed to be modular, scalable, and portable, allowing researchers to easily adapt and execute them using their own data and compute resources.
++ [nf-core](https://nf-co.re/docs/get_started/nf-core) 
 
+- Singularity ?
+
+A Singularity container is a specialized, open-source container platform designed specifically for scientific computing and High-Performance Computing (HPC) clusters. It packages software, libraries, and dependencies into a single, portable file, making complex research applications easy to reproduce and run across different systems.
+
+- sanger-tol/genomeassembly pipeline?
+is a bioinformatics pipeline for de-novo genome assembly from long read data (PacBio HiFi or ONT), long-range Hi-C data, and optionally Illumina WGS and Illumina 10X linked reads. It is capable of producing primary/alternative assembles, Hi-C phased assemblies using Hi-C data, and trio-binned assemblies using data from parental sequencing.
++ [sanger-tol/genomeassembly pipeline](https://pipelines.tol.sanger.ac.uk/genomeassembly/dev) 
+
+We will use conda to install Nexflow and nf-core tool. Lets follow steps in nf-core.
 
 
 
