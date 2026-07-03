@@ -114,7 +114,7 @@ Mean contig size:
 Longest contig is:  
 Shortest contig is: 
 
-* We have put a finished assembly here: ```/data/genomics/workshops/smsc_2024/Guam_rail_assembly/bHypOws1_hifiasm.bp.p_ctg.fasta.gz```
+* We have put a finished assembly here: ```/scratch/genomics/ariasc/Sol_moth_genome/teuthros.asm.bp.p_ctg.fasta ```
 	+ Module: ```bio/assembly_stats```
 	+ Commands: ```assembly_stats <ASSEMBLY> > assembly_stats.out```
 
