@@ -294,6 +294,13 @@ merqury.sh Sol_moth.meryl Sol_moth.hap1.p_ctg.fasta Sol_moth.hap2.p_ctg.fasta So
 
 ### Running a complete pipeline such as sanger/genome assembly 
 
+What is nf-core?
+nf-core is a global community collaborating to build open-source Nextflow components and pipelines.
+
+nf-core provides a standardised set of best practices, guidelines, and templates for building and sharing bioinformatics pipelines. These pipelines are designed to be modular, scalable, and portable, allowing researchers to easily adapt and execute them using their own data and compute resources.
+
+
+
 
 
 ### Masking and annotating repetitive elements with Repeatmodeler and RepeatMasker ------ UNDERCONSTRUCTION
