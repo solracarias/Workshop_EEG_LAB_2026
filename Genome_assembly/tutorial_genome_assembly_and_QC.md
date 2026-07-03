@@ -6,7 +6,7 @@
 * To run Genomescope, first you need to generate a Jellyfish histogram.
 
 * You'll need two job files for Jellyfish, one to count the kmers and the second to generate a histogram to give to Genomescope: 
-* Here is a copy of the Guam Rail Illumina data: ```/scratch/genomics/ariasc/Sol_moth_genome/```
+* Here is a copy of Sol Genome pacbio data: ```/scratch/genomics/ariasc/Sol_moth_genome/```
 	+ Hint: don't copy these data to your own space - they are very big.
 
 * First job file: kmer count:
@@ -51,7 +51,7 @@ Hifiasm is a fast haplotype-resolved de novo assembler for PacBio HiFi reads. It
 -o: name and path of the output file in asm format
 -t: sets the number of CPUs in use
 
-SRR27030659_1_pacbio.fastq are our PacBio Guam Rail data. Input sequences should be FASTA 
+m84100_260323_193529_s1.hifi_reads.fastq.gz are our PacBio Moth data. Input sequences should be FASTA 
 or FASTQ format, uncompressed or compressed with gzip (.gz). The quality scores of reads 
 in FASTQ are ignored by hifiasm. Hifiasm outputs assemblies in `GFA <https://github.com/pmelsted/GFA-spec/blob/master/GFA-spec.md>`_ format.
 ```
@@ -68,7 +68,7 @@ in FASTQ are ignored by hifiasm. Hifiasm outputs assemblies in `GFA <https://git
   + **RAMMemory:** 10G (10G per CPU, 300G total)
   + **Module:** `module load bio/hifiasm`
   + **Command:**
-  ```hifiasm -o Guam_Rail_hic.asm -t32 --h1 7AFA556_1.fastq.gz --h2 7AFA556_2.fastq.gz Aambiguus_duplex.fastq.gz```
+  ```hifiasm -o Urania_Fulgens_hic.asm -t32 --h1 read_1.fastq.gz --h2 read_2.fastq.gz Urania_pacbio.fastq.gz```
 
 * This job should complete in a few hours
 * In this mode, each contig represents a haplotig, which means that comes from one parental haplotype only.
