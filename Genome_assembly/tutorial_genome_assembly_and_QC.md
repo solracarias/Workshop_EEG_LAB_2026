@@ -1,6 +1,6 @@
 ### 1. Run Genomescope
 
-* Genomescope can be used to estimate genome size from short read data: 
+* Genomescope can be used to estimate genome size from short read data or long read data: 
 	+ [Genomescope](http://genomescope.org/genomescope2.0/) 
 
 * To run Genomescope, first you need to generate a Jellyfish histogram.
